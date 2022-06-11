@@ -10,13 +10,16 @@ sys.path.append(os.path.split(filePath)[0])
 
 import numpy as np
 import matplotlib.pyplot as plt
-from data.read_data import PassengerData
+from data.read_data import PassengerData, PCRData
 from tfts.model import Model
 from config import params
 
 
 def main(plot=False):
-    x, y = PassengerData(params).get_examples(data_dir='../data/international-airline-passengers.csv', sample=0.2)
+    # x, y = PassengerData(params).get_examples(data_dir='../data/pcr.csv', sample=0.2)
+    x, y = PCRData(params).get_examples(data_dir='../data/pcr.csv', sample=0.2)
+    print(x)
+    print(y)
     print(x.shape, y.shape)
 
     model = Model(params=params, use_model='pb')

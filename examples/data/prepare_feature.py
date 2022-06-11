@@ -39,3 +39,6 @@ def multi_step_y(y, predict_window, predict_gap=1):
 
 def simple_moving_average(x):
     pass
+
+if __name__ == "__main__":
+    pass

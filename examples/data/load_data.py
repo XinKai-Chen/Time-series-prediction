@@ -5,7 +5,7 @@
 
 import functools
 import tensorflow as tf
-from .read_data import PassengerData, SineData
+from .read_data import PassengerData, SineData, PCRData
 from .read_web_data import WebDataReader
 
 
@@ -18,6 +18,8 @@ class DataLoader(object):
             self.data_reader = SineData
         elif use_dataset == 'web_traffic':
             self.data_reader = WebDataReader
+        elif use_dataset == "pcr":
+            self.data_reader = PCRData
 
     def __call__(self, params, data_dir, batch_size, training, sample=1):
         data_reader = self.data_reader(params)
@@ -35,7 +37,8 @@ class WebDataLoader(object):
 
     def __call__(self, data_dir, mode, batch_size):
         data_reader = WebDataReader(data_dir, mode)
-        dataset = tf.data.Dataset.from_generator(data_reader.iter, output_types=(tf.float32, tf.float32, tf.float32, tf.float32, tf.float32, tf.float32))
+        dataset = tf.data.Dataset.from_generator(data_reader.iter, output_types=(
+        tf.float32, tf.float32, tf.float32, tf.float32, tf.float32, tf.float32))
         if mode != 'test':
             dataset = dataset.shuffle(buffer_size=2000)
         dataset = dataset.batch(batch_size, drop_remainder=True).prefetch(tf.data.experimental.AUTOTUNE)

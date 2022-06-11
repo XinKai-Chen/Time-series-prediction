@@ -13,7 +13,7 @@ from config import params
 
 
 def main():
-    data_loader = DataLoader()
+    data_loader = DataLoader(use_dataset='pcr')
     train_dataset = data_loader(params, data_dir=params['data_dir'], batch_size=params['batch_size'], training=True, sample=0.8)
     valid_dataset = data_loader(params, data_dir=params['data_dir'], batch_size=params['batch_size'], training=True, sample=0.2)
 

@@ -52,6 +52,8 @@ class Model(object):
         elif self.use_model == 'transformer':
             Model = Transformer(self.custom_model_params)
             inputs = (Input([self.input_seq_length, 1]), Input([self.output_seq_length, 1]))
+            print("*************************************************************************")
+            print("input size is : {} ".format(inputs[0].shape))
             outputs = Model(inputs, training=training, predict_seq_length=self.output_seq_length)
         elif self.use_model == 'unet':
             Model = Unet(self.custom_model_params)
