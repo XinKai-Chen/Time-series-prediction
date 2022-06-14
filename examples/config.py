@@ -14,9 +14,9 @@ parser.add_argument('--data_dir', type=str, default='../data/pcr.csv', help='dat
 parser.add_argument('--model_dir', type=str, default='../weights/checkpoint', help='saved checkpoint directory')
 parser.add_argument('--saved_model_dir', type=str, default='../weights', help='saved pb directory')
 parser.add_argument('--log_dir', type=str, default='../data/logs', help='saved pb directory')
-parser.add_argument('--input_seq_length', type=int, default=5, help='sequence length for input')
+parser.add_argument('--input_seq_length', type=int, default=10, help='sequence length for input')
 parser.add_argument('--output_seq_length', type=int, default=1, help='sequence length for output')
-parser.add_argument('--n_epochs', type=int, default=10, help='Number of training epochs')
+parser.add_argument('--n_epochs', type=int, default=50, help='Number of training epochs')
 parser.add_argument('--batch_size', type=int, default=16, help='Batch size for training')
 parser.add_argument('--learning_rate', type=float, default=3e-4, help='learning rate for training')
 

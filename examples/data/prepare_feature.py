@@ -19,7 +19,7 @@ def transform2_lagged_feature(x, window_sizes):
         inputs_roll = np.roll(x, window_size, axis=0)
         inputs_roll[:window_size] = init_value
         inputs_roll = pd.DataFrame(inputs_roll, index=x.index,
-                                   columns=[i + '_lag{}'.format(window_size) for i in x.columns])
+                                   columns=[str(i) + '_lag{}'.format(window_size) for i in x.columns])
         inputs_lagged = pd.concat([inputs_roll, inputs_lagged], axis=1)
     return inputs_lagged
 

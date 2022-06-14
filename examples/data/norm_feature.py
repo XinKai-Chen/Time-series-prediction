@@ -14,7 +14,7 @@ class FeatureNorm(object):
         if self.type == 'standard':
             scaler = StandardScaler()
         elif self.type == 'minmax':
-            scaler = MinMaxScaler()
+            scaler = MinMaxScaler(feature_range=(0, 1))
         else:
             raise ValueError("Unsupported norm type yet: {}".format(self.type))
 

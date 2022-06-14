@@ -7,6 +7,7 @@ import os
 import logging
 import random
 import numpy as np
+from scipy import interpolate
 import pandas as pd
 # import modin.pandas as pd   # faster Pandas by Berkeley
 import matplotlib.pyplot as plt
@@ -26,6 +27,13 @@ class DataSet(object):
 
     def save_tf_record(self, *args):
         pass
+
+
+def remove_nan(x, y):
+    filter = (np.isnan(y)).any(axis=1)[:]  # remove the nan in target
+    x = x[~filter]
+    y = y[~filter]
+    return x, y
 
 
 class PCRData(DataSet):
@@ -60,11 +68,18 @@ class PCRData(DataSet):
         data = self.preprocess_data(data)
 
         x = pd.DataFrame(data['Fluorescence'])
+        y = pd.DataFrame(data['Fluorescence'])
+        x, y = remove_nan(x, y)
+        print("x shape is {}, y shape is {}".format(x.shape, y.shape))
+        x = self.data_interp(np.array(x).flatten(), 10)
+        y = self.data_interp(np.array(x).flatten(), 10)
+        x = pd.DataFrame(x[:, np.newaxis])
+        y = pd.DataFrame(y[:, np.newaxis])
+
         if x.shape[1] > 40:
             raise ValueError("The PCR cycle number is {} over 40, please check!".format(x.shape[1]))
         x = self.feature_norm(x, model_dir=model_dir)  # 多种方法进行归一化放缩
         x = transform2_lagged_feature(x, window_sizes=self.params['input_seq_length'])
-        y = pd.DataFrame(data['Fluorescence'])
         y = np.log1p(y.values)  # 数据平滑处理
         y = multi_step_y(y, predict_window=self.params['output_seq_length'])
         x, y = self.postprocess(x, y)  # 增加一维，去除nan
@@ -85,8 +100,15 @@ class PCRData(DataSet):
         if sample < 0.5:  # if sample<0.5, blindly guess it's valid
             print('x:', x[n_example:].shape, ' y:', y[n_example:].shape)
             return x[n_example:], y[n_example:]
-        # for x1,y1 in zip(x,y):
-        # yield x1,y1
+
+    def data_interp(self, data, interpolation_num):
+        totalinterpolation = 40 * interpolation_num
+        x = np.linspace(1, data.shape[0], data.shape[0])
+        xnew = np.linspace(1, data.shape[0], totalinterpolation)  # 在1~y[0]一种生成190个点
+        # 选择插值方式
+        f = interpolate.interp1d(x, data, kind='cubic')
+        data = f(xnew)
+        return data
 
     def postprocess(self, x, y):
         if isinstance(x, pd.DataFrame):
@@ -98,9 +120,9 @@ class PCRData(DataSet):
         if len(y.shape) == 2:
             y = y[..., np.newaxis]
 
-        filter = (np.isnan(y)).any(axis=1)[:, 0]  # remove the nan in target
-        x = x[~filter]
-        y = y[~filter]
+        # filter = (np.isnan(y)).any(axis=1)[:, 0]  # remove the nan in target
+        # x = x[~filter]
+        # y = y[~filter]
         return x, y
 
 

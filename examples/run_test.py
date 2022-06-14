@@ -17,7 +17,7 @@ from config import params
 
 def main(plot=False):
     # x, y = PassengerData(params).get_examples(data_dir='../data/pcr.csv', sample=0.2)
-    x, y = PCRData(params).get_examples(data_dir='../data/pcr.csv', sample=0.2)
+    x, y = PCRData(params).get_examples(data_dir='../data/pcr.csv', sample=0.4)
     print(x)
     print(y)
     print(x.shape, y.shape)
