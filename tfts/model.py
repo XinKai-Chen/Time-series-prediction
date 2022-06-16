@@ -6,7 +6,7 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Input
 from tensorflow.keras.callbacks import ReduceLROnPlateau, EarlyStopping,  ModelCheckpoint, TensorBoard
-from .models import Seq2seq, WaveNet, Transformer, Unet, NBeatsNet
+from .models import Seq2seq, WaveNet, Transformer, Unet, NBeatsNet, GAN
 from .loss import Loss
 from .optimizer import Optimizer
 
@@ -60,9 +60,19 @@ class Model(object):
             inputs = Input([self.input_seq_length, 1])
             outputs = Model(inputs, training=training, predict_seq_length=self.output_seq_length)
         elif self.use_model == 'nbeats':
+            """
+                :bug: nbeats model
+            """
             Model = NBeatsNet(self.custom_model_params)
             inputs = Input([self.input_seq_length])
             outputs = Model(inputs, training=True, predict_seq_length=self.output_seq_length)
+        elif self.use_model == 'gan':
+            """
+                :bug: nbeats model
+            """
+            Model = GAN(self.custom_model_params)
+            inputs = Input([self.input_seq_length])
+            outputs = Model(inputs, training=True)
         else:
             raise ValueError("unsupported use_model of {} yet".format(self.use_model))
 

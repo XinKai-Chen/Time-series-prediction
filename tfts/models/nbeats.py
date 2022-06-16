@@ -33,14 +33,16 @@ class NBeatsNet(object):
             'general': GenericBlock
         }
 
-        self.stacks = []
-        for stack_id in range(len(self.stack_types)):
-            self.stacks.append(self.create_stack(stack_id))
-
     def __call__(self, x, predict_seq_length, training):
         self.forecast_length = x.get_shape().as_list()[1]
         self.backcast_length = predict_seq_length
         forecast = tf.zeros([tf.shape(x)[0], self.forecast_length], dtype=tf.float32)
+        self.stacks = []
+        for stack_id in range(len(self.stack_types)):
+            self.stacks.append(self.create_stack(stack_id))
+        """
+        :bug backcast not defined before use
+        """
         for stack_id in range(len(self.stacks)):
             for block_id in range(len(self.stacks[stack_id])):
                 b, f = self.stacks[stack_id][block_id](backcast)
